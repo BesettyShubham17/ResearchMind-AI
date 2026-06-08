@@ -3,12 +3,20 @@ import logging
 import uuid
 from typing import TypedDict, List, Optional, Any
 from sqlalchemy.orm import Session
+from crewai import Crew, Process, Task
 
 from app.models.all_models import Project, ResearchTask, AgentLog, Report, Source
 from app.services.tavily_service import tavily_service
 from app.services.openai_service import openai_service
 from app.vectorstore.pinecone_store import pinecone_service
 from app.websocket.manager import manager
+from app.agents.crew_agents import (
+    get_research_agent,
+    get_analysis_agent,
+    get_verification_agent,
+    get_report_agent,
+    get_visualization_agent
+)
 
 logger = logging.getLogger("researchmind.workflow")
 
@@ -77,10 +85,12 @@ async def research_node(state: ResearchState, db: Session) -> ResearchState:
 
 async def analysis_node(state: ResearchState, db: Session) -> ResearchState:
     project_id = state["project_id"]
-
+    
     await manager.send_agent_update(project_id, "Analysis Agent", "Analysing patterns across all sources...", 30)
     _add_log(db, project_id, "Analysis Agent", "ANALYZE", "Running pattern detection on collected sources.")
 
+    # In a full CrewAI setup, we'd run a Task here with get_analysis_agent()
+    # Mocking for speed
     raw_analysis = openai_service.analyze_sources(state["topic"], state["sources"])
 
     await manager.send_agent_update(project_id, "Analysis Agent", "Pattern analysis complete. Identified key trends.", 45)
