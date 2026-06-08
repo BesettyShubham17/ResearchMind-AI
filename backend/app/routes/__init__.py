@@ -1,0 +1,9 @@
+from app.routes import auth_routes  # noqa
+from app.routes import project_routes  # noqa
+from app.routes import research_routes  # noqa
+from app.routes import report_routes  # noqa
+from app.routes import analytics_routes  # noqa
+from app.routes import notification_routes  # noqa
+from app.routes import team_routes  # noqa
+from app.routes import assistant_routes  # noqa
+from app.routes import websocket_routes  # noqa
